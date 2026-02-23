@@ -1,0 +1,628 @@
+Tabela pd motoboy · HTML
+Copiar
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Tabela PD — Motoboy</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f7fc;
+      --white: #ffffff;
+      --blue: #2563eb;
+      --blue-light: #eff4ff;
+      --blue-mid: #bfcfff;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --orange: #ea580c;
+      --orange-light: #fff7ed;
+      --red: #dc2626;
+      --yellow: #fbbf24;
+      --text: #0f172a;
+      --muted: #64748b;
+      --dim: #94a3b8;
+      --border: #dde3f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      padding: 40px 32px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    h1 span {
+      color: var(--blue);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    /* ── ITEMS TABLE ── */
+    .items-wrap h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+
+    .items-table {
+      border-collapse: collapse;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 15px;
+    }
+
+    .items-table th {
+      background: var(--blue);
+      color: #fff;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .items-table th:first-child {
+      border-radius: 8px 0 0 0;
+    }
+
+    .items-table th:last-child {
+      border-radius: 0 8px 0 0;
+    }
+
+    .items-table td {
+      padding: 10px 18px;
+      border: 1px solid var(--border);
+      text-align: center;
+      background: var(--white);
+      font-size: 15px;
+      transition: background .3s;
+    }
+
+    .items-table tr.row-active td {
+      background: var(--blue-light);
+    }
+
+    /* ── MAIN DP TABLE ── */
+    .dp-wrap h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 8px;
+    }
+
+    .dp-table {
+      border-collapse: collapse;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .dp-table th {
+      background: var(--blue);
+      color: #fff;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      min-width: 52px;
+    }
+
+    .dp-table th:first-child {
+      border-radius: 8px 0 0 0;
+      min-width: 44px;
+    }
+
+    .dp-table th.p-col {
+      background: #1d4ed8;
+    }
+
+    .dp-table td {
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      text-align: center;
+      background: var(--white);
+      font-size: 15px;
+      min-width: 52px;
+      transition: background .35s, color .35s, transform .2s;
+      position: relative;
+    }
+
+    .dp-table td.filled {
+      background: var(--blue-light);
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .dp-table td.current {
+      background: var(--blue);
+      color: #fff !important;
+      font-weight: 700;
+      transform: scale(1.08);
+      z-index: 2;
+      border-radius: 4px;
+    }
+
+    .dp-table td.optimal {
+      background: #16a34a !important;
+      color: #fff !important;
+      font-weight: 700;
+      border: 2px solid #15803d;
+    }
+
+    .dp-table td.row-hi {
+      background: #fefce8;
+    }
+
+    .dp-table td.changed {
+      background: var(--orange-light);
+      color: var(--orange);
+      font-weight: 700;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin: 28px 0 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-primary:disabled {
+      background: var(--dim);
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--blue);
+      border: 1.5px solid var(--blue-mid);
+    }
+
+    .btn-secondary:hover {
+      background: var(--blue-light);
+    }
+
+    .btn-fast {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1.5px solid #bbf7d0;
+    }
+
+    .btn-fast:hover {
+      background: #dcfce7;
+    }
+
+    .step-counter {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      padding: 8px 16px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-top: 20px;
+      max-width: 760px;
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--text);
+      min-height: 72px;
+      transition: border-color .3s;
+    }
+
+    .info-box.step-blue {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .info-box.step-orange {
+      border-color: var(--orange);
+      background: var(--orange-light);
+    }
+
+    .info-box.step-green {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+
+    .info-box strong {
+      color: var(--blue);
+    }
+
+    .info-box .hl-o {
+      color: var(--orange);
+      font-weight: 700;
+    }
+
+    .info-box .hl-g {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* ── FORMULA ── */
+    .formula {
+      background: #f8faff;
+      border-left: 4px solid var(--blue);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--blue);
+      line-height: 1.8;
+      margin-top: 20px;
+      max-width: 760px;
+    }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .leg-box {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Tabela de PD — <span>Mochila 0/1</span></h1>
+  <p class="subtitle">Problema do Motoboy · Beecrowd 1286 · Capacidade P = 7</p>
+
+  <div class="layout">
+    <!-- itens -->
+    <div class="items-wrap">
+      <h3>Pedidos</h3>
+      <table class="items-table" id="items-table">
+        <thead>
+          <tr>
+            <th>i</th>
+            <th>Tempo</th>
+            <th>Pizzas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>5</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>18</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>10</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>20</td>
+            <td>5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- tabela dp -->
+    <div class="dp-wrap">
+      <h3>Tabela tab[i][w] — capacidade w de 0 a 7</h3>
+      <table class="dp-table" id="dp-table">
+        <thead>
+          <tr>
+            <th>i \ w</th>
+            <th>0</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th class="p-col">P=7</th>
+          </tr>
+        </thead>
+        <tbody id="dp-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- controls -->
+  <div class="controls">
+    <button class="btn-primary" id="btn-next">▶ Próximo passo</button>
+    <button class="btn-fast" id="btn-auto">⚡ Animação automática</button>
+    <button class="btn-secondary" id="btn-reset">↺ Reiniciar</button>
+    <span class="step-counter" id="step-counter">Passo 0 / 40</span>
+  </div>
+
+  <div class="info-box" id="info-box">
+    Clique em <strong>Próximo passo</strong> para começar a preencher a tabela célula por célula.
+  </div>
+
+  <div class="formula">
+    <strong>Recorrência:</strong><br />
+    SE pizzas[i] ≤ w: tab[i][w] = max( tab[i-1][w], tab[i-1][w - pizzas[i]] + tempo[i] )<br />
+    SENÃO: tab[i][w] = tab[i-1][w]
+  </div>
+
+  <div class="legend">
+    <div class="leg">
+      <div class="leg-box" style="background:#eff4ff;border:1.5px solid #bfcfff"></div>Preenchido
+    </div>
+    <div class="leg">
+      <div class="leg-box" style="background:#2563eb"></div>Célula atual
+    </div>
+    <div class="leg">
+      <div class="leg-box" style="background:#fff7ed;border:1.5px solid #fed7aa"></div>Valor alterado (incluiu pedido)
+    </div>
+    <div class="leg">
+      <div class="leg-box" style="background:#16a34a"></div>Resultado ótimo
+    </div>
+  </div>
+
+  <script>
+    // ── DATA ──
+    const items = [
+      { tempo: 0, pizzas: 0 },  // i=0 fictício
+      { tempo: 5, pizzas: 4 },  // i=1
+      { tempo: 18, pizzas: 2 },  // i=2
+      { tempo: 10, pizzas: 3 },  // i=3
+      { tempo: 20, pizzas: 5 },  // i=4
+    ];
+    const P = 7;
+    const N = 4;
+
+    // ── BUILD STEPS ──
+    // Pré-calcula todos os estados da tabela
+    const tab = Array.from({ length: N + 1 }, () => new Array(P + 1).fill(0));
+    const steps = []; // cada step: { i, w, val, changed, reason }
+
+    // linha 0 já é zero — não gera steps
+    for (let i = 1; i <= N; i++) {
+      for (let w = 0; w <= P; w++) {
+        let val, changed = false, reason = '';
+        if (items[i].pizzas <= w) {
+          const semIncluir = tab[i - 1][w];
+          const comIncluir = items[i].tempo + tab[i - 1][w - items[i].pizzas];
+          if (comIncluir > semIncluir) {
+            val = comIncluir; changed = true;
+            reason = `<strong>Inclui pedido ${i}</strong> (tempo=${items[i].tempo}, pizzas=${items[i].pizzas}): `
+              + `${items[i].tempo} + tab[${i - 1}][${w - items[i].pizzas}] = ${items[i].tempo} + ${tab[i - 1][w - items[i].pizzas]} = `
+              + `<span class="hl-g">${val}</span>  >  tab[${i - 1}][${w}] = ${semIncluir}  → escolhe <span class="hl-g">${val}</span>`;
+          } else {
+            val = semIncluir;
+            reason = `Não inclui pedido ${i}: tab[${i - 1}][${w}] = ${semIncluir}  ≥  ${comIncluir}  → mantém <strong>${val}</strong>`;
+          }
+        } else {
+          val = tab[i - 1][w]; changed = false;
+          reason = `Pedido ${i} tem <span class="hl-o">${items[i].pizzas} pizzas</span> — não cabe em w=${w}. Copia tab[${i - 1}][${w}] = <strong>${val}</strong>`;
+        }
+        tab[i][w] = val;
+        steps.push({ i, w, val, changed, reason });
+      }
+    }
+
+    // ── BUILD TABLE DOM ──
+    const tbody = document.getElementById('dp-body');
+    const cells = {}; // cells[i][w] = td element
+
+    function buildTable() {
+      tbody.innerHTML = '';
+      for (let i = 0; i <= N; i++) {
+        cells[i] = {};
+        const tr = document.createElement('tr');
+        // row header
+        const th = document.createElement('td');
+        th.textContent = i;
+        th.style.fontWeight = '700'; th.style.color = 'var(--blue)';
+        th.style.background = '#f8faff';
+        tr.appendChild(th);
+        // cells
+        for (let w = 0; w <= P; w++) {
+          const td = document.createElement('td');
+          td.id = `c${i}_${w}`;
+          td.textContent = i === 0 ? '0' : '?';
+          if (i === 0) td.classList.add('filled');
+          cells[i][w] = td;
+          tr.appendChild(td);
+        }
+        // P column (last col, same as w=7 but highlighted separately)
+        const tdP = document.createElement('td');
+        tdP.id = `p${i}`;
+        tdP.textContent = i === 0 ? '0' : '?';
+        tdP.style.fontWeight = '700';
+        tdP.style.color = 'var(--muted)';
+        if (i === 0) { tdP.textContent = '0'; tdP.classList.add('filled'); }
+        tr.appendChild(tdP);
+        tbody.appendChild(tr);
+      }
+    }
+
+    // ── STATE ──
+    let stepIdx = 0;
+    let autoTimer = null;
+    let prevStep = null;
+
+    function updateCounter() {
+      document.getElementById('step-counter').textContent = `Passo ${stepIdx} / ${steps.length}`;
+    }
+
+    function clearHighlights() {
+      if (!prevStep) return;
+      const { i, w } = prevStep;
+      cells[i][w].classList.remove('current');
+      // remove row-hi
+      for (let ww = 0; ww <= P; ww++) {
+        cells[i][ww].classList.remove('row-hi');
+        if (i > 0) document.getElementById(`p${i}`).classList.remove('row-hi');
+      }
+      // items table
+      document.querySelectorAll('#items-table tbody tr').forEach(r => r.classList.remove('row-active'));
+    }
+
+    function applyStep(s) {
+      clearHighlights();
+      const { i, w, val, changed } = s;
+
+      // mark row
+      for (let ww = 0; ww <= P; ww++) cells[i][ww].classList.add('row-hi');
+      // highlight current item
+      document.querySelectorAll('#items-table tbody tr')[i].classList.add('row-active');
+
+      // set value
+      cells[i][w].textContent = val;
+      cells[i][w].classList.remove('filled', 'changed');
+      cells[i][w].classList.add(changed ? 'changed' : 'filled');
+      setTimeout(() => cells[i][w].classList.add('current'), 10);
+
+      // sync p-col
+      const pCell = document.getElementById(`p${i}`);
+      pCell.textContent = cells[i][P].textContent === '?' ? '?' : tab[i][P];
+      if (w === P) {
+        pCell.textContent = val;
+        if (i === N && w === P) {
+          cells[i][w].classList.remove('current', 'changed', 'filled');
+          cells[i][w].classList.add('optimal');
+          pCell.classList.add('optimal');
+          pCell.textContent = val;
+        }
+      }
+
+      prevStep = s;
+      updateCounter();
+
+      // info
+      const box = document.getElementById('info-box');
+      box.innerHTML = `<strong>tab[${i}][${w}]</strong> — ${s.reason}`;
+      box.className = 'info-box ' + (i === N && w === P ? 'step-green' : changed ? 'step-orange' : 'step-blue');
+    }
+
+    function nextStep() {
+      if (stepIdx >= steps.length) return;
+      applyStep(steps[stepIdx]);
+      stepIdx++;
+      document.getElementById('btn-next').disabled = stepIdx >= steps.length;
+      if (stepIdx >= steps.length) {
+        stopAuto();
+        document.getElementById('info-box').innerHTML =
+          '🏆 <strong>Tabela completa!</strong> O resultado ótimo é <span class="hl-g">tab[4][7] = <strong>38 minutos</strong></span>.';
+        document.getElementById('info-box').className = 'info-box step-green';
+      }
+    }
+
+    function startAuto() {
+      if (autoTimer) return;
+      autoTimer = setInterval(() => {
+        if (stepIdx >= steps.length) { stopAuto(); return; }
+        nextStep();
+      }, 320);
+      document.getElementById('btn-auto').textContent = '⏸ Pausar';
+    }
+
+    function stopAuto() {
+      clearInterval(autoTimer); autoTimer = null;
+      document.getElementById('btn-auto').textContent = '⚡ Animação automática';
+    }
+
+    function reset() {
+      stopAuto();
+      stepIdx = 0;
+      prevStep = null;
+      buildTable();
+      updateCounter();
+      document.getElementById('btn-next').disabled = false;
+      document.getElementById('info-box').className = 'info-box';
+      document.getElementById('info-box').innerHTML =
+        'Clique em <strong>Próximo passo</strong> para começar a preencher a tabela célula por célula.';
+      document.querySelectorAll('#items-table tbody tr').forEach(r => r.classList.remove('row-active'));
+    }
+
+    document.getElementById('btn-next').addEventListener('click', () => { stopAuto(); nextStep(); });
+    document.getElementById('btn-auto').addEventListener('click', () => autoTimer ? stopAuto() : startAuto());
+    document.getElementById('btn-reset').addEventListener('click', reset);
+
+    buildTable();
+    updateCounter();
+  </script>
+</body>
+
+</html>
