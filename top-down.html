@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<title>Tabela PD Top-Down — Motoboy</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:#f5f7fc;--white:#ffffff;--blue:#2563eb;--blue-light:#eff4ff;--blue-mid:#bfcfff;
+    --green:#16a34a;--green-light:#f0fdf4;--orange:#ea580c;--orange-light:#fff7ed;
+    --purple:#7c3aed;--purple-light:#f5f3ff;--red:#dc2626;--yellow:#d97706;
+    --yellow-light:#fffbeb;--text:#0f172a;--muted:#64748b;--dim:#94a3b8;--border:#dde3f5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Lato',sans-serif;min-height:100vh;padding:36px 32px 60px}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:26px;margin-bottom:4px}
+  h1 span{color:var(--blue)}
+  .subtitle{font-size:14px;color:var(--muted);margin-bottom:28px}
+  .layout{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+
+  /* items */
+  .items-wrap h3,.dp-wrap h3,.stack-wrap h3{font-family:'Syne',sans-serif;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+  .items-table{border-collapse:collapse;font-family:'IBM Plex Mono',monospace}
+  .items-table th{background:var(--blue);color:#fff;padding:10px 16px;font-size:13px}
+  .items-table th:first-child{border-radius:8px 0 0 0}
+  .items-table th:last-child{border-radius:0 8px 0 0}
+  .items-table td{padding:9px 16px;border:1px solid var(--border);background:var(--white);font-size:14px;text-align:center;transition:background .3s}
+  .items-table tr.row-active td{background:var(--blue-light)}
+
+  /* dp table */
+  .dp-table{border-collapse:collapse;font-family:'IBM Plex Mono',monospace}
+  .dp-table th{background:var(--blue);color:#fff;padding:10px 14px;font-size:13px;text-align:center;min-width:48px}
+  .dp-table th:first-child{border-radius:8px 0 0 0;min-width:40px}
+  .dp-table td{padding:9px 14px;border:1px solid var(--border);text-align:center;background:#f1f5f9;color:var(--dim);font-size:15px;min-width:48px;transition:background .35s,color .3s,transform .2s;position:relative}
+  .dp-table td.row-head{background:#f8faff;color:var(--blue);font-weight:700}
+  .dp-table td.computing{background:var(--blue);color:#fff;font-weight:700;transform:scale(1.1);z-index:3;border-radius:4px;box-shadow:0 4px 12px rgba(37,99,235,.35)}
+  .dp-table td.cache-hit{background:var(--purple-light);color:var(--purple);font-weight:700;border:2px solid var(--purple)}
+  .dp-table td.memoized{background:var(--blue-light);color:var(--blue);font-weight:600}
+  .dp-table td.improved{background:var(--orange-light);color:var(--orange);font-weight:700}
+  .dp-table td.optimal{background:var(--green)!important;color:#fff!important;font-weight:700;border:2px solid #15803d!important}
+
+  /* stack */
+  .stack-wrap{min-width:195px}
+  .stack-box{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px;min-height:220px;max-height:320px;overflow-y:auto;display:flex;flex-direction:column-reverse;gap:5px}
+  .stack-frame{font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 10px;border-radius:6px;border-left:3px solid var(--border);background:#f8faff;color:var(--muted);transition:all .3s}
+  .stack-frame.active{background:var(--blue-light);border-left-color:var(--blue);color:var(--blue);font-weight:600}
+  .stack-frame.hit{background:var(--purple-light);border-left-color:var(--purple);color:var(--purple)}
+
+  /* controls */
+  .controls{display:flex;gap:12px;align-items:center;margin:24px 0 16px;flex-wrap:wrap}
+  button{font-family:'Lato',sans-serif;font-size:14px;font-weight:700;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;transition:all .2s}
+  .btn-p{background:var(--blue);color:#fff}.btn-p:hover{background:#1d4ed8}.btn-p:disabled{background:var(--dim);cursor:not-allowed}
+  .btn-f{background:var(--green-light);color:var(--green);border:1.5px solid #bbf7d0}.btn-f:hover{background:#dcfce7}
+  .btn-s{background:var(--white);color:var(--blue);border:1.5px solid var(--blue-mid)}.btn-s:hover{background:var(--blue-light)}
+  .step-ctr{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted);padding:8px 16px;background:var(--white);border:1px solid var(--border);border-radius:8px}
+
+  /* info */
+  .info-box{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:16px 22px;margin-top:16px;max-width:920px;font-size:14.5px;line-height:1.7;min-height:64px;transition:border-color .3s}
+  .info-box.blue{border-color:var(--blue);background:var(--blue-light)}
+  .info-box.orange{border-color:var(--orange);background:var(--orange-light)}
+  .info-box.green{border-color:var(--green);background:var(--green-light)}
+  .info-box.purple{border-color:var(--purple);background:var(--purple-light)}
+  .hl-b{color:var(--blue);font-weight:700}.hl-o{color:var(--orange);font-weight:700}.hl-g{color:var(--green);font-weight:700}.hl-p{color:var(--purple);font-weight:700}
+
+  /* legend */
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+  .leg{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+  .leg-box{width:18px;height:18px;border-radius:4px;flex-shrink:0}
+  .stack-box::-webkit-scrollbar{width:4px}
+  .stack-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<h1>Tabela PD — <span>Top-Down com Memoização</span></h1>
+<p class="subtitle">Problema do Motoboy · Simula <code style="font-family:'IBM Plex Mono',monospace">calcular_top_down(3, 7)</code> do código de Richard · P = 7</p>
+
+<div class="layout">
+  <div class="items-wrap">
+    <h3>Pedidos</h3>
+    <table class="items-table" id="items-table">
+      <thead><tr><th>i</th><th>Tempo</th><th>Pizzas</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>5</td><td>4</td></tr>
+        <tr><td>2</td><td>18</td><td>2</td></tr>
+        <tr><td>3</td><td>10</td><td>3</td></tr>
+        <tr><td>4</td><td>20</td><td>5</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="dp-wrap">
+    <h3>Memória — só calcula o que precisa!</h3>
+    <table class="dp-table" id="dp-table">
+      <thead>
+        <tr><th>i\w</th><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th></tr>
+      </thead>
+      <tbody id="dp-body"></tbody>
+    </table>
+  </div>
+
+  <div class="stack-wrap">
+    <h3>Pilha de chamadas</h3>
+    <div class="stack-box" id="stack-box">
+      <div class="stack-frame" style="color:var(--dim);font-style:italic;border:none;background:none;font-size:12px">aguardando início…</div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="btn-p" id="btn-next">▶ Próximo passo</button>
+  <button class="btn-f" id="btn-auto">⚡ Animação automática</button>
+  <button class="btn-s" id="btn-reset">↺ Reiniciar</button>
+  <span class="step-ctr" id="step-ctr">Passo 0</span>
+</div>
+
+<div class="info-box" id="info-box">
+  Clique em <strong>Próximo passo</strong> para simular as chamadas recursivas top-down. A tabela é preenchida <strong>fora de ordem</strong> e apenas as células necessárias são calculadas.
+</div>
+
+<div class="legend">
+  <div class="leg"><div class="leg-box" style="background:#f1f5f9;border:1px solid #dde3f5"></div>Não visitado</div>
+  <div class="leg"><div class="leg-box" style="background:#2563eb"></div>Calculando agora</div>
+  <div class="leg"><div class="leg-box" style="background:#eff4ff;border:1.5px solid #bfcfff"></div>Memoizado</div>
+  <div class="leg"><div class="leg-box" style="background:#fff7ed;border:1.5px solid #fed7aa"></div>Incluiu pedido ✓</div>
+  <div class="leg"><div class="leg-box" style="background:#f5f3ff;border:1.5px solid #7c3aed"></div>Cache hit ⚡</div>
+  <div class="leg"><div class="leg-box" style="background:#16a34a"></div>Resultado ótimo</div>
+</div>
+
+<script>
+const items=[{t:5,p:4},{t:18,p:2},{t:10,p:3},{t:20,p:5}];
+const P=7;
+const steps=[];
+const memo={};
+
+function sim(idx,cap,depth){
+  const di=idx+1;
+  steps.push({type:'CALL',idx,cap,di,depth,msg:`Chamada: <span class="hl-b">calcular_top_down(${idx}, ${cap})</span> — pedido ${di>0?di:'–'}, capacidade ${cap}`});
+  if(idx<0||cap===0){
+    steps.push({type:'BASE',idx,cap,di,depth,val:0,msg:`<span class="hl-g">Caso base</span>: ${idx<0?'índice < 0':'capacidade = 0'} → retorna <strong>0</strong>`});
+    return 0;
+  }
+  const key=`${idx},${cap}`;
+  if(memo[key]!==undefined){
+    steps.push({type:'HIT',idx,cap,di,depth,val:memo[key],msg:`⚡ <span class="hl-p">Cache hit!</span> memo[${idx}][${cap}] = <strong>${memo[key]}</strong> — já estava calculado, retorna direto!`});
+    return memo[key];
+  }
+  steps.push({type:'CALC',idx,cap,di,depth,msg:`Calculando tab[${di}][${cap}]: pedido ${di} tem <strong>${items[idx].p} pizzas</strong>, capacidade disponível = <strong>${cap}</strong>`});
+  let res;
+  if(items[idx].p>cap){
+    steps.push({type:'SKIP',idx,cap,di,depth,msg:`Pedido ${di} tem <span class="hl-o">${items[idx].p} pizzas</span> — não cabe (cap=${cap}). Ignora e chama calcular_top_down(${idx-1}, ${cap})`});
+    res=sim(idx-1,cap,depth+1);
+  } else {
+    steps.push({type:'TRYA',idx,cap,di,depth,msg:`Opção A — <strong>não incluir</strong> pedido ${di}: chama calcular_top_down(${idx-1}, ${cap})`});
+    const a=sim(idx-1,cap,depth+1);
+    steps.push({type:'TRYB',idx,cap,di,depth,msg:`Opção B — <strong>incluir</strong> pedido ${di} (tempo=${items[idx].t}, pizzas=${items[idx].p}): ${items[idx].t} + calcular_top_down(${idx-1}, ${cap-items[idx].p})`});
+    const b=items[idx].t+sim(idx-1,cap-items[idx].p,depth+1);
+    const changed=b>a;
+    res=Math.max(a,b);
+    steps.push({type:'MAX',idx,cap,di,depth,val:res,changed,a,b,msg:changed?`max(${a}, ${b}) = <span class="hl-o">${res}</span> → <strong>inclui pedido ${di}</strong> ✓`:`max(${a}, ${b}) = <strong>${res}</strong> → não inclui pedido ${di}`});
+  }
+  memo[key]=res;
+  steps.push({type:'SAVE',idx,cap,di,depth,val:res,msg:`Salva: <span class="hl-b">memo[${idx}][${cap}] = ${res}</span> → tab[${di}][${cap}] = <strong>${res}</strong>`});
+  return res;
+}
+sim(3,7,0);
+steps.push({type:'DONE',val:38,msg:`🏆 <span class="hl-g">Concluído! calcular_top_down(3, 7) = <strong>38 minutos</strong></span>`});
+
+// DOM
+const tbody=document.getElementById('dp-body');
+const sbox=document.getElementById('stack-box');
+const ibox=document.getElementById('info-box');
+const sctr=document.getElementById('step-ctr');
+let cells={};
+
+function buildTable(){
+  tbody.innerHTML='';cells={};
+  for(let i=1;i<=4;i++){
+    cells[i]={};
+    const tr=document.createElement('tr');
+    const th=document.createElement('td');
+    th.className='row-head';th.textContent=i;tr.appendChild(th);
+    for(let w=0;w<=P;w++){
+      const td=document.createElement('td');
+      td.className='';td.textContent='?';
+      cells[i][w]=td;tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+}
+
+let si=0,autoT=null,changedMap={};
+
+function clrComputing(){
+  for(let i=1;i<=4;i++)for(let w=0;w<=P;w++)cells[i][w].classList.remove('computing');
+}
+function setCell(di,cap,cls,val){
+  if(di<1||di>4||cap<0||cap>P)return;
+  clrComputing();
+  cells[di][cap].className=cls;
+  if(val!==undefined)cells[di][cap].textContent=val;
+}
+function hilItem(di){
+  document.querySelectorAll('#items-table tbody tr').forEach((r,i)=>r.classList.toggle('row-active',i+1===di));
+}
+function pushStack(idx,cap,type){
+  const f=document.createElement('div');
+  f.className='stack-frame '+(type==='hit'?'hit':'active');
+  f.id=`fr_${idx}_${cap}_${si}`;
+  f.textContent=`f(${idx}, ${cap})`;
+  const ph=sbox.querySelector('[style*="italic"]');if(ph)ph.remove();
+  sbox.appendChild(f);sbox.scrollTop=sbox.scrollHeight;
+  return f.id;
+}
+function popStack(fid){
+  const f=document.getElementById(fid);
+  if(f){f.style.opacity='.3';setTimeout(()=>f&&f.remove(),500);}
+}
+
+const fstack=[];
+
+function applyStep(s){
+  clrComputing();
+  sctr.textContent=`Passo ${si+1} / ${steps.length}`;
+  switch(s.type){
+    case'CALL':
+      if(s.idx>=0&&s.cap>0){setCell(s.di,s.cap,'computing','…');hilItem(s.di);}
+      fstack.push({idx:s.idx,cap:s.cap,fid:pushStack(s.idx,s.cap,'call')});
+      ibox.className='info-box blue';break;
+    case'BASE':
+      if(fstack.length)popStack(fstack.pop().fid);
+      ibox.className='info-box green';break;
+    case'HIT':
+      setCell(s.di,s.cap,'cache-hit',s.val);hilItem(s.di);
+      if(fstack.length)popStack(fstack.pop().fid);
+      ibox.className='info-box purple';break;
+    case'CALC':
+      setCell(s.di,s.cap,'computing','…');hilItem(s.di);
+      ibox.className='info-box blue';break;
+    case'SKIP':case'TRYA':case'TRYB':
+      if(s.di>=1&&s.cap>=0)setCell(s.di,s.cap,'computing','…');
+      ibox.className='info-box blue';break;
+    case'MAX':
+      if(s.changed)changedMap[`${s.di}_${s.cap}`]=true;
+      setCell(s.di,s.cap,'computing',s.val);
+      ibox.className=s.changed?'info-box orange':'info-box blue';break;
+    case'SAVE':
+      setCell(s.di,s.cap,changedMap[`${s.di}_${s.cap}`]?'improved':'memoized',s.val);
+      if(fstack.length)popStack(fstack.pop().fid);
+      ibox.className='info-box blue';
+      if(s.di===4&&s.cap===7)setTimeout(()=>setCell(4,7,'optimal',38),300);
+      break;
+    case'DONE':
+      setCell(4,7,'optimal',38);clrComputing();
+      document.querySelectorAll('#items-table tbody tr').forEach(r=>r.classList.remove('row-active'));
+      ibox.className='info-box green';
+      stopAuto();document.getElementById('btn-next').disabled=true;break;
+  }
+  ibox.innerHTML=s.msg;si++;
+}
+function nextStep(){if(si>=steps.length)return;applyStep(steps[si]);}
+function startAuto(){
+  if(autoT)return;
+  autoT=setInterval(()=>{if(si>=steps.length){stopAuto();return;}nextStep();},360);
+  document.getElementById('btn-auto').textContent='⏸ Pausar';
+}
+function stopAuto(){clearInterval(autoT);autoT=null;document.getElementById('btn-auto').textContent='⚡ Animação automática';}
+function reset(){
+  stopAuto();si=0;changedMap={};
+  while(fstack.length)fstack.pop();
+  buildTable();
+  sbox.innerHTML='<div class="stack-frame" style="color:var(--dim);font-style:italic;border:none;background:none;font-size:12px">aguardando início…</div>';
+  ibox.className='info-box';
+  ibox.innerHTML='Clique em <strong>Próximo passo</strong> para simular as chamadas recursivas top-down. A tabela é preenchida <strong>fora de ordem</strong> e apenas as células necessárias são calculadas.';
+  sctr.textContent='Passo 0';
+  document.getElementById('btn-next').disabled=false;
+  document.querySelectorAll('#items-table tbody tr').forEach(r=>r.classList.remove('row-active'));
+}
+document.getElementById('btn-next').addEventListener('click',()=>{stopAuto();nextStep();});
+document.getElementById('btn-auto').addEventListener('click',()=>autoT?stopAuto():startAuto());
+document.getElementById('btn-reset').addEventListener('click',reset);
+buildTable();
+</script>
+</body>
